@@ -75,7 +75,7 @@ export async function getAiImageAnalysis(imageFile: File, compress = true) {
   try {
     const base64 = await getCompressedImageBase64(imageFile, compress)
     const { object } = await generateObject({
-      model: client(config.value.provider === 'openai' ? 'gpt-4o' : 'gemini-2.0-flash'),
+      model: client(config.value.provider === 'openai' ? 'gpt-4o' : 'gemini-2.5-flash-lite'),
       schema: imageAnalysisSchema,
       messages: [{
         role: 'user',
