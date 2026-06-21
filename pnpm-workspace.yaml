@@ -2,19 +2,21 @@ shellEmulator: true
 shamefully-hoist: true
 strict-peer-dependencies: false
 auto-install-peers: false
+strict-dep-builds: false
 
 trustPolicy: no-downgrade
 trustPolicyExclude:
   - chokidar@4.0.3 # See https://github.com/paulmillr/chokidar/issues/1440
   - semver@6.3.1 # See https://github.com/npm/node-semver/issues/838
 
-ignoredBuiltDependencies:
-  - '@parcel/watcher'
-  - sharp
-  - unrs-resolver
-  - vue-demi
-  - workerd
+overrides:
+  nanoid: 3.3.8
 
-onlyBuiltDependencies:
-  - esbuild
-  - simple-git-hooks
+allowBuilds:
+  '@parcel/watcher': true
+  esbuild: true
+  sharp: false
+  simple-git-hooks: true
+  unrs-resolver: true
+  vue-demi: true
+  workerd: false
