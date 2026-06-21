@@ -1,4 +1,4 @@
-import type { LanguageModelV3 } from '@ai-sdk/provider'
+import type { LanguageModel } from 'ai'
 import type { AIProviderConfig } from '../composables/useAIConfig'
 import { createGoogleGenerativeAI } from '@ai-sdk/google'
 import { createOpenAI } from '@ai-sdk/openai'
@@ -15,7 +15,7 @@ export interface AIModel {
 /**
  * 创建 AI 客户端实例
  */
-export function createAIClient(provider: AIProviderConfig): LanguageModelV3 | null {
+export function createAIClient(provider: AIProviderConfig): LanguageModel | null {
   if (!provider.apiKey) {
     console.error('[AI] API key is missing for provider:', provider.id)
     return null
