@@ -7,6 +7,7 @@ definePageMeta({
 
 const currentPhoto = useState<string>('currentPhoto', () => ref(''))
 const isDrawerOpen = ref(false)
+const route = useRoute()
 const { orderBy, order } = usePhotoSort()
 
 const LIMIT = 36
@@ -14,6 +15,7 @@ const params = computed(() => ({
   hidden: false,
   orderBy: orderBy.value,
   order: order.value,
+  search: route.query.search as string | undefined,
 }))
 const { photos, hasMore, loadMore, loading } = usePhotosInfinite(params, LIMIT)
 
@@ -98,10 +100,18 @@ function getPhotoThumbnail(photo: IPhoto) {
       </div>
     </div>
     <div v-if="!loading && !photos?.length" class="m-auto p4 flex flex-col gap4 h-66vh items-center justify-center">
-      <h2>{{ $t('no_photos') }}</h2>
-      <NuxtLinkLocale to="/admin">
-        <Button>{{ $t('go_to_admin') }}</Button>
-      </NuxtLinkLocale>
+      <template v-if="route.query.search">
+        <h2>{{ $t('search.no_results') }}</h2>
+        <p class="text-muted-foreground">
+          {{ $t('search.try_other_keywords') }}
+        </p>
+      </template>
+      <template v-else>
+        <h2>{{ $t('no_photos') }}</h2>
+        <NuxtLinkLocale to="/admin">
+          <Button>{{ $t('go_to_admin') }}</Button>
+        </NuxtLinkLocale>
+      </template>
     </div>
   </section>
 </template>

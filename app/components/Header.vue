@@ -25,10 +25,12 @@ const route = useRoute()
 
 const idle = useState('p-idle', () => true)
 const showSortButton = ref(false)
+const showSearchButton = ref(false)
 const fullscreen = ref(false)
 watch(() => route.name, (routeName) => {
   const name = String(routeName).split('_')[0]
   showSortButton.value = !!name && ['index', 'grid', 'admin'].includes(name)
+  showSearchButton.value = !!name && ['index', 'grid'].includes(name)
   fullscreen.value = !!name && ['p-id'].includes(name)
 }, { immediate: true })
 </script>
@@ -38,13 +40,14 @@ watch(() => route.name, (routeName) => {
     class="px-4 border-b border-dashed bg-background/60 flex h-12 w-full transition-transform duration-300 items-center top-0 justify-between z-50 backdrop-blur"
     :class="fullscreen ? (idle ? 'absolute -translate-y-full op-0 pointer-events-none' : 'absolute translate-y-0 op-100') : 'sticky'"
   >
-    <nav div class="flex flex-auto min-w-0 items-center justify-items-start">
-      <NuxtLinkLocale to="/" class="font-medium me-2 flex-[0_1_auto] min-w-0 truncate">
+    <nav div class="flex flex-auto gap-2 min-w-0 items-center justify-items-start">
+      <NuxtLinkLocale to="/" class="font-medium flex-[0_1_auto] min-w-0 truncate">
         <Logo class="text-primary op-80 size-6" />
       </NuxtLinkLocale>
       <NuxtLinkLocale to="/" class="font-medium flex-[0_1_auto] min-w-0 truncate lt-md:hidden">
         {{ config.public.title || $t('title') }}
       </NuxtLinkLocale>
+      <HeaderSearchButton v-if="showSearchButton" />
     </nav>
     <nav div class="flex flex-auto min-w-0 items-center justify-items-start">
       <TooltipIconButton

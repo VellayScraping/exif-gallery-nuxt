@@ -20,6 +20,7 @@ header:
   theme: 自定义主题
   logout: 退出登录
   sort: 排序照片
+  search: 搜索照片
 sort:
   taken_at: 拍摄时间
   created_at: 添加时间
@@ -141,3 +142,8 @@ ai:
   semantic: 简要直接地描述图片内容，无需引导性语句
 toast:
   delete_success: 照片已成功删除
+search:
+  placeholder: 搜索标题、描述、地点或标签...
+  hint: 支持多关键词搜索，空格分隔（如：Canon sunset）
+  no_results: 没有找到匹配的照片
+  try_other_keywords: 试试其他关键词吧

@@ -1,5 +1,5 @@
 import { db } from '@nuxthub/db'
-import { and, eq, like, sql } from 'drizzle-orm'
+import { and, eq, like, or, sql } from 'drizzle-orm'
 
 export default eventHandler(async (event) => {
   const query = getQuery(event)
@@ -12,6 +12,7 @@ export default eventHandler(async (event) => {
     tag,
     camera,
     lens,
+    search,
   } = query
 
   // 转换为数字
@@ -43,16 +44,54 @@ export default eventHandler(async (event) => {
     conditions.push(eq(schema.photo.lensModel, String(lens)))
   }
 
+  // 文本搜索条件 - 支持多关键词 AND 搜索（空格分隔）
+  if (search) {
+    const keywords = String(search).split(/\s+/).filter(Boolean)
+
+    // 每个关键词都必须在某个字段中匹配（AND 逻辑）
+    for (const keyword of keywords) {
+      const keywordStr = `%${keyword}%`
+      conditions.push(
+        or(
+          like(schema.photo.title, keywordStr),
+          like(schema.photo.caption, keywordStr),
+          like(schema.photo.semanticDescription, keywordStr),
+          like(schema.photo.locationName, keywordStr),
+          like(schema.photo.make, keywordStr),
+          like(schema.photo.model, keywordStr),
+          like(schema.photo.lensModel, keywordStr),
+          like(schema.photo.tags, keywordStr), // 旧的逗号分隔标签字段
+        ),
+      )
+    }
+  }
+
   // 使用子查询而不是多次查询
   let photoIdsSubquery = null
   if (tag) {
-    // 使用原生 SQL 子查询来提高性能
-    photoIdsSubquery = sql`
-      SELECT pt.photo_id
-      FROM photo_tags pt
-      JOIN tags t ON pt.tag_id = t.id
-      WHERE t.name = ${String(tag)}
-    `
+    // 支持多标签 AND 筛选
+    const tags = Array.isArray(tag) ? tag : String(tag).split(/\s+/).filter(Boolean)
+
+    if (tags.length === 1) {
+      // 单标签：保持原有逻辑
+      photoIdsSubquery = sql`
+        SELECT pt.photo_id
+        FROM photo_tags pt
+        JOIN tags t ON pt.tag_id = t.id
+        WHERE t.name = ${tags[0]}
+      `
+    }
+    else if (tags.length > 1) {
+      // 多标签 AND：照片必须拥有所有指定标签
+      photoIdsSubquery = sql`
+        SELECT pt.photo_id
+        FROM photo_tags pt
+        JOIN tags t ON pt.tag_id = t.id
+        WHERE t.name IN (${sql.join(tags.map(t => sql`${t}`), sql`, `)})
+        GROUP BY pt.photo_id
+        HAVING COUNT(DISTINCT t.name) = ${tags.length}
+      `
+    }
   }
 
   // 计算总数和获取数据可以合并为一个查询

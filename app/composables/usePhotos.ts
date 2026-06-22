@@ -2,9 +2,10 @@ export function usePhotosInfinite(params?: MaybeRef<{
   hidden?: boolean
   orderBy?: string
   order?: string
-  tag?: string
+  tag?: string | string[]
   camera?: string
   lens?: string
+  search?: string
 }>, limit = 12): {
   photos: Ref<IPhoto[]>
   hasMore: Ref<boolean>
