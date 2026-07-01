@@ -1,4 +1,4 @@
-import { generateObject } from 'ai'
+import { generateText } from 'ai'
 import { z } from 'zod'
 import { useAIConfig } from '../composables/useAIConfig'
 import { createAIClient } from './aiProviders'
@@ -6,6 +6,16 @@ import { createAIClient } from './aiProviders'
 // Helper function to remove base64 prefix
 function removeBase64Prefix(base64: string) {
   return base64.replace(/^data:image\/(png|jpeg|jpg|webp);base64,/, '')
+}
+
+function base64ToUint8Array(base64: string): Uint8Array {
+  const base64String = removeBase64Prefix(base64)
+  const binary = atob(base64String)
+  const bytes = new Uint8Array(binary.length)
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i)
+  }
+  return bytes
 }
 
 // Helper function to clean up AI response text
@@ -46,7 +56,6 @@ function initializeAIClient() {
 export async function getAiImageAnalysis(imageFile: File, compress = true) {
   const model = initializeAIClient()
   const { t } = useNuxtApp().$i18n
-
   const imageAnalysisSchema = z.object({
     title: z.string().max(20).describe(t('ai.title_desc')),
     caption: z.string().max(60).describe(t('ai.caption_desc')),
@@ -73,40 +82,44 @@ export async function getAiImageAnalysis(imageFile: File, compress = true) {
 
   try {
     const base64 = await getCompressedImageBase64(imageFile, compress)
-    const { object } = await generateObject({
+    const { text } = await generateText({
       model,
-      schema: imageAnalysisSchema,
       messages: [{
         role: 'user',
         content: [
           {
             type: 'text',
-            text: AI_IMAGE_PROMPT,
+            text: `${AI_IMAGE_PROMPT}\n\n请严格按照以下JSON格式返回结果：{"title": "", "caption": "", "tags": [], "semanticDescription": ""}`,
           },
           {
-            type: 'image',
-            image: removeBase64Prefix(base64),
+            type: 'file',
+            mediaType: 'image',
+            data: base64ToUint8Array(base64),
           },
         ],
       }],
     })
 
+    // 尝试从文本中提取 JSON
+    const jsonMatch = text.match(/\{[\s\S]*\}/)
+    const jsonStr = jsonMatch ? jsonMatch[0] : text
+
+    const parsed = JSON.parse(jsonStr)
+
+    // 使用 zod schema 验证解析结果
+    const validated = imageAnalysisSchema.parse(parsed)
+
     const result: ImageAnalysis = {
-      title: cleanUpAiTextResponse(object.title || ''),
-      caption: cleanUpAiTextResponse(object.caption || ''),
-      tags: (object.tags || []).map((tag: string) => cleanUpAiTextResponse(tag)),
-      semanticDescription: cleanUpAiTextResponse(object.semanticDescription || ''),
+      title: cleanUpAiTextResponse(validated.title || ''),
+      caption: cleanUpAiTextResponse(validated.caption || ''),
+      tags: (validated.tags || []).map((tag: string) => cleanUpAiTextResponse(tag)),
+      semanticDescription: cleanUpAiTextResponse(validated.semanticDescription || ''),
     }
 
     return result
   }
   catch (error) {
     console.error('Error generating image analysis:', error)
-    return {
-      title: '',
-      caption: '',
-      tags: [],
-      semanticDescription: '',
-    }
+    throw error
   }
 }

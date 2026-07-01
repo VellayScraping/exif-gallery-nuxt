@@ -1,7 +1,7 @@
 import type { LanguageModel } from 'ai'
 import type { AIProviderConfig } from '../composables/useAIConfig'
 import { createGoogleGenerativeAI } from '@ai-sdk/google'
-import { createOpenAI } from '@ai-sdk/openai'
+import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
 
 // 模型信息接口
 export interface AIModel {
@@ -12,9 +12,6 @@ export interface AIModel {
   owned_by?: string
 }
 
-/**
- * 创建 AI 客户端实例
- */
 export function createAIClient(provider: AIProviderConfig): LanguageModel | null {
   if (!provider.apiKey) {
     console.error('[AI] API key is missing for provider:', provider.id)
@@ -24,13 +21,14 @@ export function createAIClient(provider: AIProviderConfig): LanguageModel | null
   try {
     switch (provider.type) {
       case 'openai': {
-        const client = createOpenAI({
+        const client = createOpenAICompatible({
+          name: provider.id === 'openai' ? 'openai' : provider.id,
           baseURL: provider.baseURL || 'https://api.openai.com/v1',
           apiKey: provider.apiKey,
         })
-        // 使用自定义模型或默认模型
         const modelId = provider.model || 'gpt-4o'
-        return client(modelId)
+
+        return client.chatModel(modelId)
       }
       case 'gemini': {
         const client = createGoogleGenerativeAI({
@@ -38,7 +36,7 @@ export function createAIClient(provider: AIProviderConfig): LanguageModel | null
           apiKey: provider.apiKey,
         })
         // 使用自定义模型或默认模型
-        const modelId = provider.model || 'gemini-2.0-flash'
+        const modelId = provider.model || 'gemini-3.1-flash-lite'
         return client(modelId)
       }
       default:

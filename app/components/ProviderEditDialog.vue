@@ -26,6 +26,7 @@ const type = ref<ProviderType>(props.provider?.type || 'openai')
 const apiKey = ref(props.provider?.apiKey || '')
 const baseUrl = ref(props.provider?.baseURL || getDefaultBaseUrl(type.value))
 const model = ref(props.provider?.model || '')
+const apiFormat = ref<'completions' | 'responses'>(props.provider?.apiFormat || 'completions')
 const availableModels = ref<string[]>([])
 const isLoadingModels = ref(false)
 const testConnectionResult = ref<{ success: boolean, error?: string, modelCount?: number } | null>(null)
@@ -128,6 +129,7 @@ function handleSave() {
     baseURL: baseUrl.value ? normalizeBaseUrl(baseUrl.value) : undefined,
     model: model.value!,
     enabled: props.provider?.enabled ?? true,
+    apiFormat: type.value === 'openai' ? apiFormat.value : undefined,
   })
 
   // 重置表单
@@ -148,6 +150,7 @@ function resetForm() {
   apiKey.value = ''
   baseUrl.value = getDefaultBaseUrl('openai')
   model.value = ''
+  apiFormat.value = 'completions'
   availableModels.value = []
   testConnectionResult.value = null
 }
@@ -161,6 +164,7 @@ watch(() => props.open, (isOpen) => {
     apiKey.value = props.provider.apiKey
     baseUrl.value = props.provider.baseURL || getDefaultBaseUrl(props.provider.type)
     model.value = props.provider.model || ''
+    apiFormat.value = props.provider.apiFormat || 'completions'
     availableModels.value = []
     testConnectionResult.value = null
   }
@@ -205,6 +209,24 @@ watch(() => props.open, (isOpen) => {
               </SelectItem>
               <SelectItem value="gemini">
                 Gemini
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <!-- API 格式 (仅 OpenAI 兼容供应商显示) -->
+        <div v-if="type === 'openai'">
+          <Label for="provider-api-format">{{ $t('ai_config.api_format') || 'API 格式' }}</Label>
+          <Select id="provider-api-format" v-model="apiFormat">
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="completions">
+                Chat Completions API
+              </SelectItem>
+              <SelectItem value="responses">
+                Responses API
               </SelectItem>
             </SelectContent>
           </Select>

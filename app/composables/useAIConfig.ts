@@ -11,6 +11,7 @@ export interface AIProviderConfig {
   model?: string // 自定义模型名称
   enabled: boolean // 是否启用
   createdAt: number // 创建时间戳
+  apiFormat?: 'completions' | 'responses' // OpenAI 兼容 API 的格式选择
 }
 
 // 旧版 AI 配置接口（用于向后兼容）
@@ -39,6 +40,7 @@ const defaultProviders: Record<string, AIProviderConfig> = {
     model: 'gpt-4o',
     enabled: false,
     createdAt: Date.now(),
+    apiFormat: 'completions',
   },
   gemini: {
     id: 'gemini',
