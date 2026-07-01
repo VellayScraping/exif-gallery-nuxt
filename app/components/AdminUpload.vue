@@ -250,7 +250,7 @@ function closeFile(id: number) {
       <FileUploadGrid />
     </FileUpload>
 
-    <Button
+    <ProButton
       v-if="files.length"
       :disabled="processLoading || !loggedIn"
       :loading="uploadLoading"
@@ -258,7 +258,7 @@ function closeFile(id: number) {
       @click="loggedIn && uploadAll()"
     >
       <span>{{ $t('upload_photo.upload_all') }}</span>
-    </Button>
+    </ProButton>
 
     <UploadPhoto
       v-for="file in files"

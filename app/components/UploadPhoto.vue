@@ -106,7 +106,7 @@ onUnmounted(() => {
           </div>
         </div>
         <div class="flex gap-2 items-end justify-center md:flex-col">
-          <Button
+          <ProButton
             variant="outline"
             class="w-fit"
             :disabled="aiLoading || compressLoading || !loggedIn"
@@ -114,8 +114,8 @@ onUnmounted(() => {
             @click="loggedIn && emit('upload')"
           >
             <span>{{ $t('upload_photo.upload_button') }}</span>
-          </Button>
-          <Button
+          </ProButton>
+          <ProButton
             v-if="aiConfig.enabled"
             variant="outline"
             class="w-fit"
@@ -123,7 +123,7 @@ onUnmounted(() => {
             @click="emit('generate')"
           >
             <span>{{ $t('upload_photo.ai_button') }}</span>
-          </Button>
+          </ProButton>
         </div>
       </div>
       <CollapsibleContent>

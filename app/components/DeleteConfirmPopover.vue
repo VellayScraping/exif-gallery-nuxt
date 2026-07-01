@@ -21,9 +21,9 @@ const open = defineModel<boolean>('open', { default: false })
         <Button variant="outline" size="sm" @click="emit('cancel'); open = false">
           {{ $t('button.cancel') }}
         </Button>
-        <Button variant="destructive" size="sm" :loading="loading" @click="emit('confirm'); open = false">
+        <ProButton variant="destructive" size="sm" :loading="loading" @click="emit('confirm'); open = false">
           {{ $t('button.confirm_delete') }}
-        </Button>
+        </ProButton>
       </div>
     </PopoverContent>
   </Popover>

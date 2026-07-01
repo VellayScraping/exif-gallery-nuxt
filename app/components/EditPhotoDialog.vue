@@ -83,13 +83,13 @@ async function saveChanges() {
         <Button variant="outline" @click="open = false">
           {{ $t('edit_photo.cancel') }}
         </Button>
-        <Button
+        <ProButton
           :loading="isSaving"
           :disabled="!loggedIn"
           @click="loggedIn && saveChanges()"
         >
           {{ $t('edit_photo.save_changes') }}
-        </Button>
+        </ProButton>
       </DialogFooter>
     </DialogContent>
   </Dialog>

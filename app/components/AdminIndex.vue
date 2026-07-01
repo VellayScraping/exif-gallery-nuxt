@@ -74,7 +74,7 @@ function openEditDialog(photo: IPhoto) {
                 <div class="i-lucide-edit" />
               </Button>
             </EditPhotoDialog>
-            <Button
+            <ProButton
               :loading="deletingPhoto === photo.id"
               :disabled="!loggedIn"
               variant="destructive"
@@ -82,7 +82,7 @@ function openEditDialog(photo: IPhoto) {
               @click="loggedIn && deletePhoto(photo.id)"
             >
               <div class="i-lucide-trash" />
-            </Button>
+            </ProButton>
           </div>
           <img
             v-if="photo"
