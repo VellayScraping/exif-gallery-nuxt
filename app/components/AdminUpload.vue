@@ -192,8 +192,9 @@ async function processFileAiDescription(fileEntry: FileEntry, thumbnailFile?: Fi
     const aiData = await aiLimit(() => getAiImageAnalysis(fileToAnalyze, thumbnail instanceof File))
     fileEntry.photo = { ...fileEntry.photo, ...aiData, tags: aiData.tags.join(',') }
   }
-  catch (error) {
+  catch (error: unknown) {
     console.error('Failed to get AI description', error)
+    toast.error($t('upload_photo.ai_error'), { description: (error as Error)?.message || $t('upload_photo.ai_error_retry') })
   }
   finally {
     fileEntry.aiLoading = false
@@ -250,7 +251,7 @@ function closeFile(id: number) {
       <FileUploadGrid />
     </FileUpload>
 
-    <Button
+    <ProButton
       v-if="files.length"
       :disabled="processLoading || !loggedIn"
       :loading="uploadLoading"
@@ -258,7 +259,7 @@ function closeFile(id: number) {
       @click="loggedIn && uploadAll()"
     >
       <span>{{ $t('upload_photo.upload_all') }}</span>
-    </Button>
+    </ProButton>
 
     <UploadPhoto
       v-for="file in files"

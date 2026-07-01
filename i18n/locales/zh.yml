@@ -68,6 +68,7 @@ ai_config:
   base_url_placeholder: 请输入 API 地址，空则使用默认地址
   model: 模型
   model_placeholder: 请输入模型名称
+  api_format: API 格式
   add_provider: 添加服务商
   add_provider_desc: 添加一个新的 AI 服务商配置
   provider_name: 服务商名称
@@ -98,6 +99,8 @@ upload_photo:
   untitled: 未命名
   upload_button: 上传
   ai_button: AI 识图
+  ai_error: AI 分析失败
+  ai_error_retry: 请重试
   upload_all: 上传全部
 edit_photo:
   title: 编辑照片

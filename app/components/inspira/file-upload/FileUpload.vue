@@ -28,6 +28,7 @@ function onFileChange(e: Event) {
   if (!input.files)
     return
   handleFileChange(Array.from(input.files))
+  input.value = ''
 }
 
 function handleClick() {

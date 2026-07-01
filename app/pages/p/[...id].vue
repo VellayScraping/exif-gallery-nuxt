@@ -74,7 +74,7 @@ const { isSwiping, direction } = useSwipe(imageContainerRef, {
       v-if="hasContext && canGoNext"
       class="group cursor-pointer right-2 top-1/2 absolute z-10 -translate-y-1/2"
     >
-      <Button
+      <ProButton
         variant="ghost"
         class="text-xl text-foreground/67 rounded-lg bg-background/30 size-16 shadow-lg transition-all duration-300 backdrop-blur hover:bg-background/50"
         :class="cn(
@@ -85,7 +85,7 @@ const { isSwiping, direction } = useSwipe(imageContainerRef, {
         @click="goNext"
       >
         <div class="i-lucide-chevron-right" />
-      </Button>
+      </ProButton>
     </div>
 
     <PhotoItem

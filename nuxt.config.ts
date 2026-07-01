@@ -100,6 +100,19 @@ export default defineNuxtConfig({
   vite: {
     optimizeDeps: {
       exclude: ['@jsquash/avif', '@jsquash/jpeg', '@jsquash/png', '@jsquash/resize', '@jsquash/webp'],
+      include: [
+        '@lucide/vue',
+        'clsx',
+        'nuxt > @nuxt/devtools > @vitejs/devtools-kit/client',
+        'nuxt > @nuxt/devtools > @vitejs/devtools/client/inject',
+        'nuxt > @nuxt/devtools > @vue/devtools-core',
+        'nuxt > @nuxt/devtools > @vue/devtools-kit',
+        'nuxt > @nuxt/devtools > error-stack-parser-es',
+        'nuxt > @nuxt/devtools > vite-plugin-vue-tracer/client/overlay',
+        'reka-ui',
+        'tailwind-merge',
+        'vue-sonner',
+      ],
     },
     worker: {
       format: 'es',

@@ -68,6 +68,7 @@ ai_config:
   base_url_placeholder: Enter API URL, leave empty for default
   model: Model
   model_placeholder: Enter model name
+  api_format: API Format
   add_provider: Add Provider
   add_provider_desc: Add a new AI provider configuration
   provider_name: Provider Name
@@ -98,6 +99,8 @@ upload_photo:
   untitled: Untitled
   upload_button: Upload
   ai_button: AI Recognition
+  ai_error: AI Analysis Failed
+  ai_error_retry: Please try again
   upload_all: Upload All
 edit_photo:
   title: Edit Photo

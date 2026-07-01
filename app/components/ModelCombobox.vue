@@ -7,7 +7,7 @@ const props = defineProps<{
   placeholder?: string
 }>()
 
-const modelValue = defineModel<string>({ default: undefined })
+const modelValue = defineModel<string | undefined>()
 
 const open = ref(false)
 const searchQuery = ref('')

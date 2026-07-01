@@ -17,32 +17,21 @@ defineOptions({
 const props = defineProps<Props>()
 
 interface Props extends ButtonProps {
-  icon?: string
-  label: string
   loading?: boolean
 }
 
-const buttonProps = reactiveOmit(props, 'icon', 'label', 'loading')
+const buttonProps = reactiveOmit(props, 'loading')
 
 const attrs = useAttrs()
 </script>
 
 <template>
-  <Tooltip>
-    <TooltipTrigger as-child>
-      <slot>
-        <Button
-          v-bind="{ ...attrs, ...buttonProps }"
-        >
-          <Spinner v-if="loading" class="animate-spin" />
-          <div :class="icon" />
-        </Button>
-      </slot>
-    </TooltipTrigger>
-    <TooltipContent>
-      <p>{{ label }}</p>
-    </TooltipContent>
-  </Tooltip>
+  <Button
+    v-bind="{ ...attrs, ...buttonProps }"
+  >
+    <Spinner v-if="loading" class="animate-spin" />
+    <slot />
+  </Button>
 </template>
 
 <style scoped>
